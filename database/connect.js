@@ -11,3 +11,8 @@ export async function connectToMongoDB() {
     console.dir(err);
   }
 }
+
+
+const mongoClient = await connectToMongoDB();
+const db = mongoClient.db("Beacon");
+export const eventsCollection = db.collection("events");
