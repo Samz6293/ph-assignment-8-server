@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express';
 import cors from "cors";
 import { eventsCollection } from './database/connect.js';
+import { ObjectId } from 'mongodb';
 
 //initialize server
 const app = express();
@@ -23,7 +24,7 @@ app.post("/events", async(req, res) => {
 app.get("/events", async(req, res) => {
     const data = await eventsCollection.find().toArray();
     res.send(data);
-})
+});
 
 // Upcoming Events
 app.get("/events/upcoming", async(req, res) => {
@@ -35,7 +36,13 @@ app.get("/events/upcoming", async(req, res) => {
         .limit(limit)
         .toArray();
     res.send(data);
-})
+});
+
+app.get("/upcoming-events/:id", async(req, res) => {
+    const id = req.params.id;
+    const data = await eventsCollection.findOne({_id: new ObjectId(id)});
+    res.send(data);
+});
 
 
 app.listen(PORT, ()=>{
