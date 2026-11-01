@@ -3,7 +3,7 @@ import express from 'express';
 import cors from "cors";
 import { eventsCollection } from './database/connect.js';
 import { ObjectId } from 'mongodb';
-import { readFile } from 'fs/promises';
+import endpointsFile from './endpoints.json' with { type: 'json' };
 
 //initialize server
 const app = express();
@@ -12,10 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 // Base route
-app.get('/', async(req, res) => {
-    const file = await readFile('./endpoints.json', 'utf-8');
-    const data = JSON.parse(file);
-
+app.get('/', (req, res) => {
+    const data = structuredClone(endpointsFile);
     data.endpoints.forEach(endpoint => {
         endpoint.path = data.baseurl + endpoint.path;
     });
@@ -158,3 +156,5 @@ app.patch("/events/:id/leave", async(req, res) => {
 app.listen(PORT, ()=>{
     console.log(`Server running on port: http://localhost:${PORT}`)
 });
+
+export default app;
