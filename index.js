@@ -38,6 +38,16 @@ app.delete("/events/:id", async(req, res) => {
     res.send(result);
 });
 
+    // Update an event
+app.patch("/events/:id", async(req, res) => {
+    const id = req.params.id;
+    const updatedDdata = req.body;
+    const result = await eventsCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: updatedDdata}
+    );
+    res.send(result);
+});
     // Previous Events
 app.get("/events/previous", async(req, res) => {
     const now = new Date().toISOString();
