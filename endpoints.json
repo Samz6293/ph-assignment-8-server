@@ -1,0 +1,32 @@
+{
+  "message": "API Working",
+  "baseurl": "http://localhost:8080",
+  "endpoints": [
+    {
+      "path": "/events",
+      "method": "POST",
+      "description": "Create a new event (JSON body)"
+    },
+    {
+      "path": "/events",
+      "method": "GET",
+      "description": "Get all events"
+    },
+    {
+      "path": "/events/upcoming",
+      "method": "GET",
+      "description": "Get upcoming events sorted by date",
+      "query": { "limit": "Optional max number of events to return" }
+    },
+    {
+      "path": "/upcoming-events/:id",
+      "method": "GET",
+      "description": "Get a single event by its ID"
+    },
+    {
+      "path": "/manage-events/:id",
+      "method": "GET",
+      "description": "Get all events hosted by the given host ID"
+    }
+  ]
+}
