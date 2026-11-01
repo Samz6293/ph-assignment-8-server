@@ -32,6 +32,26 @@
       "path": "/events/:id",
       "method": "DELETE",
       "description": "Delete an event by its ID"
+    },
+    {
+      "path": "/events",
+      "method": "GET",
+      "description": "Get all events"
+    },
+    {
+      "path": "/events/:id",
+      "method": "PATCH",
+      "description": "Update an event by its ID (JSON body)"
+    },
+    {
+      "path": "/events/:id/join",
+      "method": "PATCH",
+      "description": "Join an event (JSON body: userId, name, email, image)"
+    },
+    {
+      "path": "/joined-events/:userId",
+      "method": "GET",
+      "description": "Get all events the given user joined, sorted by date"
     }
   ]
 }
