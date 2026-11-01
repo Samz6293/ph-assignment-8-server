@@ -8,9 +8,9 @@
       "description": "Create a new event (JSON body)"
     },
     {
-      "path": "/events",
+      "path": "/events/previous",
       "method": "GET",
-      "description": "Get all events"
+      "description": "Get events whose date has passed"
     },
     {
       "path": "/events/upcoming",
@@ -19,14 +19,19 @@
       "query": { "limit": "Optional max number of events to return" }
     },
     {
-      "path": "/upcoming-events/:id",
+      "path": "/event-details/:id",
       "method": "GET",
       "description": "Get a single event by its ID"
     },
     {
       "path": "/manage-events/:id",
       "method": "GET",
-      "description": "Get all events hosted by the given host ID"
+      "description": "Get all events hosted by the given host ID, sorted by date"
+    },
+    {
+      "path": "/events/:id",
+      "method": "DELETE",
+      "description": "Delete an event by its ID"
     }
   ]
 }

@@ -30,12 +30,24 @@ app.post("/events", async(req, res) => {
     const result = await eventsCollection.insertOne(event)
     res.send(result);
 });
-app.get("/events", async(req, res) => {
-    const data = await eventsCollection.find().toArray();
+
+    // Delete an event
+app.delete("/events/:id", async(req, res) => {
+    const id = req.params.id;
+    const result = await eventsCollection.deleteOne({_id: new ObjectId(id)});
+    res.send(result);
+});
+
+    // Previous Events
+app.get("/events/previous", async(req, res) => {
+    const now = new Date().toISOString();
+    const data = await eventsCollection
+        .find({date: {$lt: now}})
+        .toArray();
     res.send(data);
 });
 
-// Upcoming Events
+    // Upcoming Events
 app.get("/events/upcoming", async(req, res) => {
     const now = new Date().toISOString();
     const limit = parseInt(req.query.limit) || 0; 
@@ -47,18 +59,23 @@ app.get("/events/upcoming", async(req, res) => {
     res.send(data);
 });
 
-app.get("/upcoming-events/:id", async(req, res) => {
+// Event details route
+app.get("/event-details/:id", async(req, res) => {
     const id = req.params.id;
     const data = await eventsCollection.findOne({_id: new ObjectId(id)});
     res.send(data);
 });
 
-// Manage Events
+// Manage events route
 app.get("/manage-events/:id", async(req, res) => {
     const id = req.params.id;
-    const data = await eventsCollection.find({hostID: id}).toArray();
+    const data = await eventsCollection
+        .find({hostID: id})
+        .sort({ date: 1 })
+        .toArray();
     res.send(data);
 });
+
 
 
 app.listen(PORT, ()=>{
