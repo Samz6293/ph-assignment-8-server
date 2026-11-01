@@ -16,7 +16,6 @@ app.get('/', async(req, res) => {
     const file = await readFile('./endpoints.json', 'utf-8');
     const data = JSON.parse(file);
 
-    // add the baseurl in front of every path
     data.endpoints.forEach(endpoint => {
         endpoint.path = data.baseurl + endpoint.path;
     });
@@ -127,6 +126,31 @@ app.get("/joined-events/:userId", async(req, res) => {
         .sort({ date: 1 })
         .toArray();
     res.send(data);
+});
+
+// Leave Event
+app.patch("/events/:id/leave", async(req, res) => {
+    const id = req.params.id;
+    const { userId } = req.body;
+
+    // verifying if event exists
+    const event = await eventsCollection.findOne({_id: new ObjectId(id)});
+    if(!event) return res.status(404).send({message: "This event no longer exists"});
+
+    // can't leave an event that already happened
+    const now = new Date().toISOString();
+    if(event.date < now) return res.status(400).send({message: "This event already happened"});
+
+    // remove the person whose userId matches from the array
+    const result = await eventsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $pull: { joinedPeople: { userId: userId } } }
+    );
+
+    // nothing changed = they were not in the array
+    if(result.modifiedCount === 0) return res.status(409).send({message: "You haven't joined this event"});
+
+    res.send(result);
 });
 
 

@@ -49,6 +49,11 @@
       "description": "Join an event (JSON body: userId, name, email, image)"
     },
     {
+      "path": "/events/:id/leave",
+      "method": "PATCH",
+      "description": "Leave an event (JSON body: userId)"
+    },
+    {
       "path": "/joined-events/:userId",
       "method": "GET",
       "description": "Get all events the given user joined, sorted by date"
