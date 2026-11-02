@@ -4,12 +4,31 @@ import cors from "cors";
 import { eventsCollection } from './database/connect.js';
 import { ObjectId } from 'mongodb';
 import endpointsFile from './endpoints.json' with { type: 'json' };
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 
 //initialize server
 const app = express();
 const PORT = 8080;
 app.use(cors());
 app.use(express.json());
+
+// Middleware
+const verifyToken = async(req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if(!authHeader) return res.status(401).send({message: "Unauthorized"});
+    
+    const token = authHeader.split(" ")[1];
+    if(!token) return res.status(401).send({message: "Unauthorized"});
+     
+    const JWKS = createRemoteJWKSet(new URL(`${process.env.FRONT_END_URL}/api/auth/jwks`))
+    try {
+        const { payload } = await jwtVerify(token, JWKS);
+        next();
+    } catch (error) {
+        return res.status(500).send({message: "Server Error! Failed to verify token"});
+    }
+
+}
 
 // Base route
 app.get('/', (req, res) => {
@@ -80,7 +99,7 @@ app.get("/event-details/:id", async(req, res) => {
 });
 
 // Manage events route
-app.get("/manage-events/:id", async(req, res) => {
+app.get("/manage-events/:id", verifyToken, async(req, res) => {
     const id = req.params.id;
     const data = await eventsCollection
         .find({hostID: id})
